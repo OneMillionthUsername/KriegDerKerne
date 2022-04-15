@@ -6,12 +6,19 @@ namespace KriegDerKerne
 {
 	public class Entity
 	{
-		//vars
+		//leerer Konstruktor
+		public Entity() { }
+		//Konstruktor für Name
+		public Entity(string name)
+		{
+			Name = name;
+		}
+		//Felder
 		protected string _Name;
 		protected int _PosX;
 		protected int _PosY;
 		protected int _maxX = Console.WindowWidth, _maxY = Console.WindowHeight;
-		//props
+		//properties
 		public string Name
 		{
 			get { return _Name; }
@@ -57,16 +64,14 @@ namespace KriegDerKerne
 		{
 			Console.SetCursorPosition(PosX, PosY); //BUG OVERFLOW
 			Console.Write(Name /*+ " x= " + posX + " y= " + posY*/);
-			await Task.CompletedTask;
 		}
-		public async Task DeleteEntitiyAsync(int PosX, int PosY)
+		public async Task DeleteEntityAsync(int PosX, int PosY)
 		{
 			string temp = Name;
 			Name = Name.Replace(Name, new String(' ', Name.Length));
 			Console.SetCursorPosition(PosX, PosY); //BUG OVERFLOW
 			Console.Write(Name);
 			Name = temp;
-			await Task.CompletedTask;
 		}
 	}
 }

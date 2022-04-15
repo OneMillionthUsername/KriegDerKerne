@@ -6,54 +6,75 @@ namespace KriegDerKerne
 {
 	class Player : Entity
 	{
-		public async Task MoveAsync(int PosX, int PosY)
+		//leerer Konstruktor
+		public Player() { }
+
+		//Konstruktor für Name
+		public Player(string name, int posX, int posY)
+		{
+			Name = name;
+			PosX = posX;
+			PosY = posY;
+		}
+		// Methoden
+		public async Task MoveAsync()
 		{
 			if (Console.ReadKey().Key == ConsoleKey.A)
 			{
+				Console.SetCursorPosition(PosX, PosY);
+				DeleteEntityAsync(PosX, PosY);
 				PosX -= 1;
+				DrawEntityAsync(PosX, PosY);
 			}
 			if (Console.ReadKey().Key == ConsoleKey.D)
 			{
+				Console.SetCursorPosition(PosX, PosY);
+				DeleteEntityAsync(PosX, PosY);
 				PosX += 1;
+				DrawEntityAsync(PosX, PosY);
 			}
 			if (Console.ReadKey().Key == ConsoleKey.W)
 			{
+				Console.SetCursorPosition(PosX, PosY);
+				DeleteEntityAsync(PosX, PosY);
 				PosY -= 1;
+				DrawEntityAsync(PosX, PosY);
 			}
 			if (Console.ReadKey().Key == ConsoleKey.S)
 			{
+				Console.SetCursorPosition(PosX, PosY);
+				DeleteEntityAsync(PosX, PosY);
 				PosY += 1;
+				DrawEntityAsync(PosX, PosY);
 			}
 			await Task.CompletedTask;
-			//if((PosX < maxX || PosY < maxY) && (PosY > 0 || PosX > 0)) 
 		}
-		public async Task ShootAsync(int PosX, int PosY)
+		public async Task ShootAsync(Entity entity, int PosX, int PosY)
 		{
+			// bringe Cursor in richtiger Position
 			PosX += 2;
 			int temp = PosY;
-			string tName = Name;
-			Name = "|";
 			PosY -= 1;
-			for (int i = 0; i < _maxY; i++)
+			// shoot
+			for (	int i = 0; i < _maxY; i++)
 			{
 				Console.SetCursorPosition(PosX, PosY);
-				await DeleteEntitiyAsync(PosX, PosY);
+				entity.DeleteEntityAsync(PosX, PosY);
 				PosY -= 1;
-				await DrawEntityAsync(PosX, PosY);
+				entity.DrawEntityAsync(PosX, PosY);
 				if (PosY == 0)
 				{
-					await DeleteEntitiyAsync(PosX, PosY);
+					entity.DeleteEntityAsync(PosX, PosY);
 					break;
 				}
 				if (PosY == _maxY)
 				{
-					await DeleteEntitiyAsync(PosX, PosY);
+					entity.DeleteEntityAsync(PosX, PosY);
 					break;
 				}
 				Thread.Sleep(100);
 			}
 			PosY = temp;
-			Name = tName;
 			await Task.CompletedTask;
 		}
 	}

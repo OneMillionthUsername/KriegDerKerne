@@ -11,174 +11,136 @@ namespace KriegDerKerne
 		static async Task Main()
 		{
 			//initialisiere Variablen
+			Program p = new();
 			Console.CursorVisible = false;
 			int dice;
 			int maxX = Console.WindowWidth - 1, maxY = Console.WindowHeight - 1;
 
-			//erzeuge Objekte
+			// erzeuge Listen
 			Random rnd = new();
 			List<Entity> entities = new();
+			List<Enemy> enemies = new();
 			List<Task> tasks = new();
-			Entity e1 = new();
-			Entity e2 = new();
-			Entity e3 = new();
-			Entity e4 = new();
-			Player player = new();
-			
 
-			//Speicher sie in einer Liste
-			entities.Add(e1);
-			entities.Add(e2);
-			entities.Add(e3);
-			entities.Add(e4);
-
-			//erzeuge die Graphik
-			player.Name = "<-O->";
-			e1.Name = "\\_I_/";
-			e2.Name = "\\_I_/";
-			e3.Name = "\\_I_/";
-			e4.Name = "\\_I_/";
-
-			//init die Positionen
-			player.PosX = maxX / 2;
-			player.PosY = 29;
-
-			e1.PosX = rnd.Next(0, maxX);
-			e1.PosY = rnd.Next(0, maxY);
-			e2.PosX = rnd.Next(0, maxX);
-			e2.PosY = rnd.Next(0, maxY);
-			e3.PosX = rnd.Next(0, maxX);
-			e3.PosY = rnd.Next(0, maxY);
-			e4.PosX = rnd.Next(0, maxX);
-			e4.PosY = rnd.Next(0, maxY);
-
-			//Gegenstände zeichnen
-			foreach (Entity e in entities)
+			// erzeuge Objekte und füge sie zu einer Liste
+			for (int i = 0; i < 5; i++)
 			{
+				enemies.Add(new Enemy("\\_I_/"));
+			}
+
+			// Erzeuge den Spieler
+			Player player = new("<-0->", maxX / 2, 29);
+			
+			// erzeuge die Gegner
+			foreach (Enemy e in enemies)
+			{
+				e.Name = "\\_I_/";
 				e.PosX = rnd.Next(0, maxX);
 				e.PosY = rnd.Next(0, maxY);
-				tasks.Add(Task.Run(() => e.DrawEntityAsync(e.PosX, e.PosY)));
+				e.DrawEntityAsync(e.PosX, e.PosY);
 			}
-			await Task.WhenAll(tasks);
-			//await e1.DrawEntityAsync(e1.PosX, e1.PosY);
-			//await e2.DrawEntityAsync(e2.PosX, e2.PosY);
-			//await e3.DrawEntityAsync(e3.PosX, e3.PosY);
-			//await e4.DrawEntityAsync(e4.PosX, e4.PosY);
 
 			//Spieler zeichnen
-			await player.DrawEntityAsync(player.PosX, player.PosY);
-
+			player.DrawEntityAsync(player.PosX, player.PosY);
 			do
 			{
-				//player.Move(player.PosX, player.PosY);
+				p.CheckInput(entities, player);
+				//p.CheckInput(entities, player);
+				player.MoveAsync();
 
-				//if (Console.ReadKey().Key == ConsoleKey.A)
-				//{
-				//	Console.SetCursorPosition(player.PosX, player.PosY);
-				//	player.DeleteEntitiy(player.PosX, player.PosY);
-				//	player.PosX -= 1;
-				//	player.DrawEntity(player.PosX, player.PosY);
-				//}
-				//if (Console.ReadKey().Key == ConsoleKey.D)
-				//{
-				//	Console.SetCursorPosition(player.PosX, player.PosY);
-				//	player.DeleteEntitiy(player.PosX, player.PosY);
-				//	player.PosX += 1;
-				//	player.DrawEntity(player.PosX, player.PosY);
-				//}
-				//if (Console.ReadKey().Key == ConsoleKey.W)
-				//{
-				//	Console.SetCursorPosition(player.PosX, player.PosY);
-				//	player.DeleteEntitiy(player.PosX, player.PosY);
-				//	player.PosY -= 1;
-				//	player.DrawEntity(player.PosX, player.PosY);
-				//}
-				//if (Console.ReadKey().Key == ConsoleKey.S)
-				//{
-				//	Console.SetCursorPosition(player.PosX, player.PosY);
-				//	player.DeleteEntitiy(player.PosX, player.PosY);
-				//	player.PosY += 1;
-				//	player.DrawEntity(player.PosX, player.PosY);
-				//}
-
-				if (Console.ReadKey().Key == ConsoleKey.Spacebar)
+				foreach (Enemy e in enemies)
 				{
-					tasks.Add(Task.Run(() => player.ShootAsync(player.PosX, player.PosY)));
-				}
-
-				foreach (Entity entity in entities)
-				{
-					entity.DeleteEntitiyAsync(entity.PosX, entity.PosY);
-					if (entity.PosY > 0 && entity.PosY < maxY)
+					e.DeleteEntityAsync(e.PosX, e.PosY);
+					if (e.PosY > 0 && e.PosY < maxY)
 					{
 						dice = rnd.Next(1, 2 + 1);
 						if (dice > 1)
 						{
-							entity.PosY -= 1;
+							e.PosY -= 1;
 						}
 						else
 						{
-							entity.PosY += 1;
+							e.PosY += 1;
 						}
 					}
 					else
 					{
-						if (entity.PosY == 0)
+						if (e.PosY == 0)
 						{
-							entity.PosY += 1;
+							e.PosY += 1;
 						}
-						if (entity.PosY == maxY)
+						if (e.PosY == maxY)
 						{
-							entity.PosY -= 1;
+							e.PosY -= 1;
 						}
 					}
-					if (entity.PosX > 0 && entity.PosX < maxX)
+					if (e.PosX > 0 && e.PosX < maxX)
 					{
 						dice = rnd.Next(1, 2 + 1);
 						if (dice > 1)
 						{
-							entity.PosX -= 1;
+							e.PosX -= 1;
 						}
 						else
 						{
-							entity.PosX += 1;
+							e.PosX += 1;
 						}
 					}
 					else
 					{
-						if (entity.PosX == 0)
+						if (e.PosX == 0)
 						{
-							entity.PosX += 1;
+							e.PosX += 1;
 						}
-						if (entity.PosX == maxX)
+						if (e.PosX == maxX)
 						{
-							entity.PosX -= 1;
+							e.PosX -= 1;
 						}
 					}
-					entity.DrawEntityAsync(entity.PosX, entity.PosY);
+					e.DrawEntityAsync(e.PosX, e.PosY);
 				}
 
-					if ((e1.PosX == e2.PosX || e1.PosX == e3.PosX || e1.PosX == e4.PosX) &&
-						(e1.PosY == e2.PosY || e1.PosY == e3.PosY || e1.PosX == e4.PosY))
+				// Winning Conditions
+				foreach (Enemy e in enemies)
+				{
+					int count = enemies.Count;
+					foreach (Entity laser in entities)
 					{
-						if ((e2.PosX == e3.PosX || e2.PosX == e4.PosX) &&
-							(e2.PosY == e3.PosY || e2.PosY == e4.PosY))
+						if ((laser.PosX >= e.PosX-2 && laser.PosX <= e.PosX+2) && e.PosY == laser.PosY)
 						{
-							if ((e3.PosX == e4.PosX) &&
-								(e3.PosY == e4.PosY))
-							{
-								break;
-							}
+							laser.DeleteEntityAsync(laser.PosX, laser.PosY);
+							entities.Remove(laser);
+							e.DeleteEntityAsync(e.PosX, e.PosY);
+							enemies.Remove(e);
 							break;
 						}
+					}
+					if (count > enemies.Count)
+					{
 						break;
 					}
+				}
+				if (enemies.Count == 0)
+				{
+					break;
+				}
 				Thread.Sleep(100);
-
 			} while (true);
 
 			Console.Clear();
+			Console.SetCursorPosition(maxX / 2, maxY / 2);
 			Console.WriteLine("GG!");
+		}
+		public async Task CheckInput(List<Entity> entities, Player player)
+		{
+			if (Console.ReadKey().Key == ConsoleKey.Spacebar)
+			{
+				entities.Add(new Entity("|"));
+				foreach (Entity laser in entities)
+				{
+					Task.Run(() => player.ShootAsync(laser, player.PosX, player.PosY));
+				}
+			}
 		}
 	}
 }
