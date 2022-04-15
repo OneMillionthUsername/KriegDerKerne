@@ -1,20 +1,23 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KriegDerKerne
 {
-	class Entity
+	public class Entity
 	{
-		private string _Name;
-		private protected int maxX = Console.WindowWidth, maxY = Console.WindowHeight;
+		//vars
+		protected string _Name;
+		protected int _PosX;
+		protected int _PosY;
+		protected int _maxX = Console.WindowWidth, _maxY = Console.WindowHeight;
+		//props
 		public string Name
 		{
 			get { return _Name; }
 			set { _Name = value; }
 		}
-
-		private int _PosX; // my var
-
-		public int PosX // my property
+		public int PosX
 		{
 			get { return _PosX; }
 			set
@@ -25,16 +28,13 @@ namespace KriegDerKerne
 				{
 					_PosX += 1;
 				}
-				if (_PosX == maxY)
+				if (_PosX == _maxY)
 				{
 					_PosX -= 1;
 				}
 			}
 		}
-
-		private int _PosY; // my var
-
-		public int PosY // my property
+		public int PosY
 		{
 			get { return _PosY; }
 
@@ -46,25 +46,27 @@ namespace KriegDerKerne
 				{
 					_PosY += 1;
 				}
-				if (_PosY == maxY)
+				if (_PosY == _maxY)
 				{
 					_PosY -= 1;
 				}
 			}
 		}
-
-		public void DrawEntity(int posX, int posY)
+		//methods
+		public async Task DrawEntityAsync(int PosX, int PosY)
 		{
-			Console.SetCursorPosition(posX, posY); //BUG OVERFLOW
+			Console.SetCursorPosition(PosX, PosY); //BUG OVERFLOW
 			Console.Write(Name /*+ " x= " + posX + " y= " + posY*/);
+			await Task.CompletedTask;
 		}
-		public void DeleteEntitiy(int posX, int posY)
+		public async Task DeleteEntitiyAsync(int PosX, int PosY)
 		{
 			string temp = Name;
 			Name = Name.Replace(Name, new String(' ', Name.Length));
-			Console.SetCursorPosition(posX, posY); //BUG OVERFLOW
+			Console.SetCursorPosition(PosX, PosY); //BUG OVERFLOW
 			Console.Write(Name);
 			Name = temp;
+			await Task.CompletedTask;
 		}
 	}
 }
