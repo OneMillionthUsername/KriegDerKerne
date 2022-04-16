@@ -55,7 +55,7 @@ namespace KriegDerKerne
 				{
 					//Lösche Gegner auf pos xy
 					e.DeleteEntityAsync(e.PosX, e.PosY);
-
+					//berechne position neu
 					if (e.PosY > 0 && e.PosY < maxY)
 					{
 						dice = rnd.Next(1, 2 + 1);
