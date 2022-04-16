@@ -52,8 +52,12 @@ namespace KriegDerKerne
 
 				await Task.WhenAll(tasks);
 
+
 				foreach (Enemy e in enemies)
 				{
+					//Lösche Gegner auf pos xy
+					tasks.Add(Task.Run(() => e.DeleteEntityAsync(e.PosX, e.PosY)));
+
 					//
 					e.DeleteEntityAsync(e.PosX, e.PosY);
 					if (e.PosY > 0 && e.PosY < maxY)
@@ -102,6 +106,7 @@ namespace KriegDerKerne
 							e.PosX -= 1;
 						}
 					}
+					//zeichne Gegner auf neuer pos
 					e.DrawEntityAsync(e.PosX, e.PosY);
 				}
 
