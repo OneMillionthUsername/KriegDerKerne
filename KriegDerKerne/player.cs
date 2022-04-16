@@ -17,7 +17,7 @@ namespace KriegDerKerne
 			PosY = posY;
 		}
 		// Methoden
-		public async Task MoveAsync()
+		public Task MoveAsync()
 		{
 			if (Console.ReadKey().Key == ConsoleKey.A)
 			{
@@ -47,13 +47,12 @@ namespace KriegDerKerne
 				PosY += 1;
 				DrawEntityAsync(PosX, PosY);
 			}
-			await Task.CompletedTask;
+			return Task.CompletedTask;
 		}
-		public async Task ShootAsync(Entity entity, int PosX, int PosY)
+		public Task ShootAsync(Entity entity, int PosX, int PosY)
 		{
 			// bringe Cursor in richtiger Position
 			PosX += 2;
-			int temp = PosY;
 			PosY -= 1;
 			// shoot
 			for (	int i = 0; i < _maxY; i++)
@@ -74,8 +73,7 @@ namespace KriegDerKerne
 				}
 				Thread.Sleep(100);
 			}
-			PosY = temp;
-			await Task.CompletedTask;
+			return Task.CompletedTask;
 		}
 	}
 }

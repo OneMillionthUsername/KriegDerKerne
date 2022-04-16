@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 namespace KriegDerKerne
 {
 
-	class Program
+	class KriegDerKerne
 	{
 		static async Task Main()
 		{
 			//initialisiere Variablen
-			Program p = new();
+			KriegDerKerne p = new();
 			Console.CursorVisible = false;
 			int dice;
 			int maxX = Console.WindowWidth - 1, maxY = Console.WindowHeight - 1;
@@ -25,7 +25,7 @@ namespace KriegDerKerne
 			// erzeuge Objekte und füge sie zu einer Liste
 			for (int i = 0; i < 5; i++)
 			{
-				enemies.Add(new Enemy("\\_I_/"));
+				enemies.Add(new Enemy());
 			}
 
 			// Erzeuge den Spieler
@@ -42,14 +42,19 @@ namespace KriegDerKerne
 
 			//Spieler zeichnen
 			player.DrawEntityAsync(player.PosX, player.PosY);
+
+			//Hauptschleife
 			do
 			{
-				p.CheckInput(entities, player);
-				//p.CheckInput(entities, player);
-				player.MoveAsync();
+				// warte auf Eingabe?
+				tasks.Add(Task.Run(() => CheckInputAndShoot(entities, player)));
+				tasks.Add(Task.Run(() => player.MoveAsync()));
+
+				await Task.WhenAll(tasks);
 
 				foreach (Enemy e in enemies)
 				{
+					//
 					e.DeleteEntityAsync(e.PosX, e.PosY);
 					if (e.PosY > 0 && e.PosY < maxY)
 					{
@@ -104,8 +109,10 @@ namespace KriegDerKerne
 				foreach (Enemy e in enemies)
 				{
 					int count = enemies.Count;
+
 					foreach (Entity laser in entities)
 					{
+						//wenn ein Gegner getroffen wird, lösche den Laser und den Gegner.
 						if ((laser.PosX >= e.PosX-2 && laser.PosX <= e.PosX+2) && e.PosY == laser.PosY)
 						{
 							laser.DeleteEntityAsync(laser.PosX, laser.PosY);
@@ -131,16 +138,21 @@ namespace KriegDerKerne
 			Console.SetCursorPosition(maxX / 2, maxY / 2);
 			Console.WriteLine("GG!");
 		}
-		public async Task CheckInput(List<Entity> entities, Player player)
+		public static Task CheckInputAndShoot(List<Entity> entities, Player player)
 		{
-			if (Console.ReadKey().Key == ConsoleKey.Spacebar)
+			do
 			{
-				entities.Add(new Entity("|"));
-				foreach (Entity laser in entities)
+				if (Console.ReadKey().Key == ConsoleKey.Spacebar)
 				{
-					Task.Run(() => player.ShootAsync(laser, player.PosX, player.PosY));
-				}
-			}
+					entities.Add(new Entity("|"));
+					foreach (Entity laser in entities)
+					{
+						player.ShootAsync(laser, player.PosX, player.PosY);
+					}
+					entities.Clear();
+				} 
+			} while (entities.Count != 0);
+			return Task.CompletedTask;
 		}
 	}
 }
