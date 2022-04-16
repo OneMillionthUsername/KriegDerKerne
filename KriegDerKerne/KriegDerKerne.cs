@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 namespace KriegDerKerne
 {
 
-	class Program
+	class KriegDerKerne
 	{
 		static async Task Main()
 		{
 			//initialisiere Variablen
-			Program p = new();
+			KriegDerKerne p = new();
 			Console.CursorVisible = false;
 			int dice;
 			int maxX = Console.WindowWidth - 1, maxY = Console.WindowHeight - 1;
@@ -25,7 +25,7 @@ namespace KriegDerKerne
 			// erzeuge Objekte und füge sie zu einer Liste
 			for (int i = 0; i < 5; i++)
 			{
-				enemies.Add(new Enemy("\\_I_/"));
+				enemies.Add(new Enemy());
 			}
 
 			// Erzeuge den Spieler
@@ -42,15 +42,18 @@ namespace KriegDerKerne
 
 			//Spieler zeichnen
 			player.DrawEntityAsync(player.PosX, player.PosY);
+
+			//Hauptschleife
 			do
 			{
-				p.CheckInput(entities, player);
-				//p.CheckInput(entities, player);
-				player.MoveAsync();
+				tasks.Add(Task.Run(() => CheckInputAndShoot(entities, tasks, player)));
+				tasks.Add(Task.Run(() => player.MoveAsync()));
+
+				await Task.WhenAll(tasks);
 
 				foreach (Enemy e in enemies)
 				{
-					e.DeleteEntityAsync(e.PosX, e.PosY);
+					tasks.Add(Task.Run(() => e.DeleteEntityAsync(e.PosX, e.PosY)));
 					if (e.PosY > 0 && e.PosY < maxY)
 					{
 						dice = rnd.Next(1, 2 + 1);
@@ -97,7 +100,9 @@ namespace KriegDerKerne
 							e.PosX -= 1;
 						}
 					}
-					e.DrawEntityAsync(e.PosX, e.PosY);
+					tasks.Add(Task.Run(() =>e.DrawEntityAsync(e.PosX, e.PosY)));
+
+					await Task.WhenAll(tasks);
 				}
 
 				// Winning Conditions
@@ -108,10 +113,11 @@ namespace KriegDerKerne
 					{
 						if ((laser.PosX >= e.PosX-2 && laser.PosX <= e.PosX+2) && e.PosY == laser.PosY)
 						{
-							laser.DeleteEntityAsync(laser.PosX, laser.PosY);
-							entities.Remove(laser);
-							e.DeleteEntityAsync(e.PosX, e.PosY);
-							enemies.Remove(e);
+							tasks.Add(Task.Run(() => laser.DeleteEntityAsync(laser.PosX, laser.PosY)));
+							tasks.Add(Task.Run(() => entities.Remove(laser)));
+							tasks.Add(Task.Run(() => e.DeleteEntityAsync(e.PosX, e.PosY)));
+							tasks.Add(Task.Run(() => enemies.Remove(e)));
+							await Task.WhenAll(tasks);
 							break;
 						}
 					}
@@ -131,15 +137,17 @@ namespace KriegDerKerne
 			Console.SetCursorPosition(maxX / 2, maxY / 2);
 			Console.WriteLine("GG!");
 		}
-		public async Task CheckInput(List<Entity> entities, Player player)
+		public static async Task CheckInputAndShoot(List<Entity> entities, List<Task> tasks, Player player)
 		{
 			if (Console.ReadKey().Key == ConsoleKey.Spacebar)
 			{
 				entities.Add(new Entity("|"));
 				foreach (Entity laser in entities)
 				{
-					Task.Run(() => player.ShootAsync(laser, player.PosX, player.PosY));
+					tasks.Add(Task.Run(() => player.ShootAsync(laser, player.PosX, player.PosY)));
+					await Task.WhenAll(tasks);
 				}
+				entities.Clear();
 			}
 		}
 	}

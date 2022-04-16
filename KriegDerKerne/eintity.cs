@@ -35,7 +35,7 @@ namespace KriegDerKerne
 				{
 					_PosX += 1;
 				}
-				if (_PosX == _maxY)
+				if (_PosX == _maxX)
 				{
 					_PosX -= 1;
 				}
@@ -60,12 +60,12 @@ namespace KriegDerKerne
 			}
 		}
 		//methods
-		public async Task DrawEntityAsync(int PosX, int PosY)
+		public void DrawEntityAsync(int PosX, int PosY)
 		{
 			Console.SetCursorPosition(PosX, PosY); //BUG OVERFLOW
 			Console.Write(Name /*+ " x= " + posX + " y= " + posY*/);
 		}
-		public async Task DeleteEntityAsync(int PosX, int PosY)
+		public void DeleteEntityAsync(int PosX, int PosY)
 		{
 			string temp = Name;
 			Name = Name.Replace(Name, new String(' ', Name.Length));
