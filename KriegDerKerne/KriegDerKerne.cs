@@ -52,6 +52,8 @@ namespace KriegDerKerne
 
 				await Task.WhenAll(tasks);
 
+				await Task.WhenAll(tasks);
+
 				foreach (Enemy e in enemies)
 				{
 					//
@@ -102,7 +104,9 @@ namespace KriegDerKerne
 							e.PosX -= 1;
 						}
 					}
-					e.DrawEntityAsync(e.PosX, e.PosY);
+					tasks.Add(Task.Run(() =>e.DrawEntityAsync(e.PosX, e.PosY)));
+
+					await Task.WhenAll(tasks);
 				}
 
 				// Winning Conditions
@@ -115,10 +119,11 @@ namespace KriegDerKerne
 						//wenn ein Gegner getroffen wird, lösche den Laser und den Gegner.
 						if ((laser.PosX >= e.PosX-2 && laser.PosX <= e.PosX+2) && e.PosY == laser.PosY)
 						{
-							laser.DeleteEntityAsync(laser.PosX, laser.PosY);
-							entities.Remove(laser);
-							e.DeleteEntityAsync(e.PosX, e.PosY);
-							enemies.Remove(e);
+							tasks.Add(Task.Run(() => laser.DeleteEntityAsync(laser.PosX, laser.PosY)));
+							tasks.Add(Task.Run(() => entities.Remove(laser)));
+							tasks.Add(Task.Run(() => e.DeleteEntityAsync(e.PosX, e.PosY)));
+							tasks.Add(Task.Run(() => enemies.Remove(e)));
+							await Task.WhenAll(tasks);
 							break;
 						}
 					}
