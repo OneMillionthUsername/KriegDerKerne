@@ -49,17 +49,13 @@ namespace KriegDerKerne
 				// warte auf Eingabe?
 				tasks.Add(Task.Run(() => CheckInputAndShoot(entities, player)));
 				tasks.Add(Task.Run(() => player.MoveAsync()));
-
 				await Task.WhenAll(tasks);
-
 
 				foreach (Enemy e in enemies)
 				{
 					//Lösche Gegner auf pos xy
-					tasks.Add(Task.Run(() => e.DeleteEntityAsync(e.PosX, e.PosY)));
-
-					//
 					e.DeleteEntityAsync(e.PosX, e.PosY);
+
 					if (e.PosY > 0 && e.PosY < maxY)
 					{
 						dice = rnd.Next(1, 2 + 1);
@@ -132,31 +128,23 @@ namespace KriegDerKerne
 						break;
 					}
 				}
-				if (enemies.Count == 0)
-				{
-					break;
-				}
 				Thread.Sleep(100);
-			} while (true);
-
+			} while (enemies.Count != 0);
 			Console.Clear();
 			Console.SetCursorPosition(maxX / 2, maxY / 2);
 			Console.WriteLine("GG!");
 		}
 		public static Task CheckInputAndShoot(List<Entity> entities, Player player)
 		{
-			do
+			if (Console.ReadKey().Key == ConsoleKey.Spacebar)
 			{
-				if (Console.ReadKey().Key == ConsoleKey.Spacebar)
+				entities.Add(new Entity("|"));
+				foreach (Entity laser in entities)
 				{
-					entities.Add(new Entity("|"));
-					foreach (Entity laser in entities)
-					{
-						player.ShootAsync(laser, player.PosX, player.PosY);
-					}
-					entities.Clear();
-				} 
-			} while (entities.Count != 0);
+					player.ShootAsync(laser, player.PosX, player.PosY);
+				}
+				entities.Clear();
+			} 
 			return Task.CompletedTask;
 		}
 	}
