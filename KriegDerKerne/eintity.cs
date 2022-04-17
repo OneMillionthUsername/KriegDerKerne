@@ -60,12 +60,12 @@ namespace KriegDerKerne
 			}
 		}
 		//methods
-		public void DrawEntityAsync(int PosX, int PosY)
+		public void DrawEntity(int PosX, int PosY)
 		{
 			Console.SetCursorPosition(PosX, PosY); //BUG OVERFLOW
 			Console.Write(Name /*+ " x= " + posX + " y= " + posY*/);
 		}
-		public void DeleteEntityAsync(int PosX, int PosY)
+		public void DeleteEntity(int PosX, int PosY)
 		{
 			string temp = Name;
 			Name = Name.Replace(Name, new String(' ', Name.Length));

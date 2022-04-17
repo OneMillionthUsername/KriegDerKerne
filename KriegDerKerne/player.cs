@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace KriegDerKerne
 {
@@ -17,39 +18,38 @@ namespace KriegDerKerne
 			PosY = posY;
 		}
 		// Methoden
-		public Task MoveAsync()
+		public void Move()
 		{
-			if (Console.ReadKey().Key == ConsoleKey.A)
+			if (Console.ReadKey(true).Key == ConsoleKey.A)
 			{
 				Console.SetCursorPosition(PosX, PosY);
-				DeleteEntityAsync(PosX, PosY);
+				DeleteEntity(PosX, PosY);
 				PosX -= 1;
-				DrawEntityAsync(PosX, PosY);
+				DrawEntity(PosX, PosY);
 			}
-			if (Console.ReadKey().Key == ConsoleKey.D)
+			if (Console.ReadKey(true).Key == ConsoleKey.D)
 			{
 				Console.SetCursorPosition(PosX, PosY);
-				DeleteEntityAsync(PosX, PosY);
+				DeleteEntity(PosX, PosY);
 				PosX += 1;
-				DrawEntityAsync(PosX, PosY);
+				DrawEntity(PosX, PosY);
 			}
-			if (Console.ReadKey().Key == ConsoleKey.W)
+			if (Console.ReadKey(true).Key == ConsoleKey.W)
 			{
 				Console.SetCursorPosition(PosX, PosY);
-				DeleteEntityAsync(PosX, PosY);
+				DeleteEntity(PosX, PosY);
 				PosY -= 1;
-				DrawEntityAsync(PosX, PosY);
+				DrawEntity(PosX, PosY);
 			}
-			if (Console.ReadKey().Key == ConsoleKey.S)
+			if (Console.ReadKey(true).Key == ConsoleKey.S)
 			{
 				Console.SetCursorPosition(PosX, PosY);
-				DeleteEntityAsync(PosX, PosY);
+				DeleteEntity(PosX, PosY);
 				PosY += 1;
-				DrawEntityAsync(PosX, PosY);
+				DrawEntity(PosX, PosY);
 			}
-			return Task.CompletedTask;
 		}
-		public Task ShootAsync(Entity entity, int PosX, int PosY)
+		public void Shoot(List<Entity> entities, List<Enemy> enemies, Entity entity, int PosX, int PosY)
 		{
 			// bringe Cursor in richtiger Position
 			PosX += 2;
@@ -58,22 +58,36 @@ namespace KriegDerKerne
 			for (	int i = 0; i < _maxY; i++)
 			{
 				Console.SetCursorPosition(PosX, PosY);
-				entity.DeleteEntityAsync(PosX, PosY);
+				entity.DeleteEntity(PosX, PosY);
 				PosY -= 1;
-				entity.DrawEntityAsync(PosX, PosY);
+				entity.DrawEntity(PosX, PosY);
 				if (PosY == 0)
 				{
-					entity.DeleteEntityAsync(PosX, PosY);
+					entity.DeleteEntity(PosX, PosY);
 					break;
 				}
 				if (PosY == _maxY)
 				{
-					entity.DeleteEntityAsync(PosX, PosY);
+					entity.DeleteEntity(PosX, PosY);
 					break;
+				}
+				foreach (Enemy e in enemies)
+				{
+					foreach (Entity l in entities)
+					{
+						//wenn ein Gegner getroffen wird, lösche den Laser und den Gegner.
+						if ((l.PosX >= e.PosX - 2 && l.PosX <= e.PosX + 2) && e.PosY == l.PosY)
+						{
+							l.DeleteEntity(l.PosX, l.PosY);
+							entities.Remove(l);
+							e.DeleteEntity(e.PosX, e.PosY);
+							enemies.Remove(e);
+							break;
+						}
+					}
 				}
 				Thread.Sleep(100);
 			}
-			return Task.CompletedTask;
 		}
 	}
 }
