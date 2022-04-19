@@ -1,37 +1,24 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace KriegDerKerne
 {
 	class Player : Entity
 	{
 		//init fields
-		protected new int PosX;
-		protected new int PosY;
-		private new string Name = "<-O->";
+		private readonly string _name = "<-O->";
+
+		//init props
 
 		//Konstruktor
 		public Player()
 		{
-			PosX = _maxX/2;
+			PosX = _maxX / 2;
 			PosY = _maxY;
+			Name = _name;
 		}
 		// Methoden
-		public void DrawEntity()
-		{
-			Console.SetCursorPosition(PosX, PosY);
-			Console.Write(Name);
-		}
-		public void DeleteEntity()
-		{
-			string temp = Name;
-			Name = Name.Replace(Name, new String(' ', Name.Length));
-			Console.SetCursorPosition(PosX, PosY);
-			Console.Write(Name);
-			Name = temp;
-		}
+
 		public void Move()
 		{
 			do
@@ -63,6 +50,38 @@ namespace KriegDerKerne
 					DeleteEntity();
 					PosY += 1;
 					DrawEntity();
+				}
+				else
+				{
+					continue;
+				}
+			} while (true);
+		}
+		public void Shoot()
+		{
+			//SPIELER POSITION WIRD NICHT AKTUALISIERT!
+			do
+			{
+				// Konstruktor und bringe Cursor in richtiger Position
+				Laser laser = new(PosX += 2, PosY -= 1);
+				// shoot
+				for (int i = 0; i < laser._maxY; i++)
+				{
+					Console.SetCursorPosition(laser.PosX, laser.PosY);
+					laser.DeleteEntity();
+					laser.PosY -= 1;
+					laser.DrawEntity();
+					if (laser.PosY == 0)
+					{
+						laser.DeleteEntity();
+						break;
+					}
+					if (laser.PosY == laser._maxY)
+					{
+						laser.DeleteEntity();
+						break;
+					}
+					Thread.Sleep(100);
 				}
 			} while (true);
 		}

@@ -30,7 +30,7 @@
 
 //			// Erzeuge den Spieler
 //			Player player = new("<-0->", maxX / 2, 29);
-			
+
 //			// erzeuge die Gegner
 //			foreach (Enemy e in enemies)
 //			{

@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace KriegDerKerne
 {
@@ -12,7 +12,7 @@ namespace KriegDerKerne
 			//initialisiere Variablen und Objekte
 			Random rnd = new();
 			Console.CursorVisible = false;
-			int anzahlEnemies = 5, dice = 0; 
+			int anzahlEnemies = 5, dice = 0;
 			int maxX = Console.WindowWidth - 1, maxY = Console.WindowHeight - 1;
 
 			// erzeuge Listen
@@ -25,20 +25,20 @@ namespace KriegDerKerne
 			{
 				enemies.Add(new Enemy(rnd.Next(0, maxX), rnd.Next(0, maxY)));
 			}
+			foreach (Enemy e in enemies)
+			{
+				e.DrawEntity();
+			}
 
 			//Erzeuge den Spieler
 			Player player = new();
-			//Spieler zeichnen
 			player.DrawEntity();
-			//Gegner Zeichnen
-			foreach (Enemy e in enemies)
-			{
-				e.DrawEnemy();
-			}
+			Thread playerMove = new(new ThreadStart(() => player.Move()));
+			Thread playerShoot = new(new ThreadStart(() => player.Shoot()));
+			Thread checkInput = new(new ThreadStart(() => CheckInput(player)));
 
-			Thread playerMove = new Thread(new ThreadStart(() => player.Move()));
 			//starte die Threads
-			playerMove.Start();
+			Threads(checkInput, playerMove, playerShoot);
 
 			//Hauptschleife
 			do
@@ -48,7 +48,7 @@ namespace KriegDerKerne
 				foreach (Enemy e in enemies)
 				{
 					//Lösche Gegner auf pos xy
-					e.DeleteEnemy();
+					e.DeleteEntity();
 					//berechne position neu
 					#region POSITION BERECHNEN
 
@@ -100,7 +100,7 @@ namespace KriegDerKerne
 					}
 					#endregion
 					//zeichne Gegner auf neuer pos
-					e.DrawEnemy();
+					e.DrawEntity();
 					Thread.Sleep(10);
 				}
 			} while (enemies.Count != 0);
@@ -109,20 +109,22 @@ namespace KriegDerKerne
 			Console.SetCursorPosition(maxX / 2, maxY / 2);
 			Console.WriteLine("GG!");
 		}
-		public static void Move(Enemy e)
+		public static void CheckInput(Player p)
 		{
-			
-		}
-
-		public static void CheckInputAndShoot(Player player)
-		{
-			do
+			if(Console.ReadKey(true).Key == ConsoleKey.Spacebar)
 			{
-				if (Console.ReadKey(true).Key == ConsoleKey.Spacebar)
-				{
+				p.Shoot();
+			}
+		}
+		public static void Threads(params Thread[] threads)
+		{
+			ConcurrentQueue<Thread> q = new();
 
-				} 
-			} while (true);
+			foreach (Thread thread in threads)
+			{
+				thread.Start();
+				q.Enqueue(Thread.CurrentThread);
+			}
 		}
 	}
 }

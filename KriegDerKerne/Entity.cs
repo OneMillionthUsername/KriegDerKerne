@@ -1,23 +1,14 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace KriegDerKerne
 {
 	public abstract class Entity
 	{
-		//leerer Konstruktor
-		public Entity() { }
-		//Konstruktor für Name
-		public Entity(string name)
-		{
-			Name = name;
-		}
 		//Felder
-		private string _Name;
+		public string _Name;
 		private int _PosX;
 		private int _PosY;
-		internal int _maxX = Console.WindowWidth-1, _maxY = Console.WindowHeight-1;
+		internal int _maxX = Console.WindowWidth, _maxY = Console.WindowHeight;
 		//properties
 		public string Name
 		{
@@ -60,18 +51,18 @@ namespace KriegDerKerne
 			}
 		}
 		//methods
-		//void DrawEntity(int PosX, int PosY)
-		//{
-		//	Console.SetCursorPosition(PosX, PosY);
-		//	Console.Write(Name);
-		//}
-		//void DeleteEntity(int PosX, int PosY)
-		//{
-		//	string temp = Name;
-		//	Name = Name.Replace(Name, new String(' ', Name.Length));
-		//	Console.SetCursorPosition(PosX, PosY);
-		//	Console.Write(Name);
-		//	Name = temp;
-		//}
+		public void DrawEntity()
+		{
+			Console.SetCursorPosition(PosX, PosY);
+			Console.Write(Name);
+		}
+		public void DeleteEntity()
+		{
+			string temp = Name;
+			Name = Name.Replace(Name, new String(' ', Name.Length));
+			Console.SetCursorPosition(PosX, PosY);
+			Console.Write(Name);
+			Name = temp;
+		}
 	}
 }
