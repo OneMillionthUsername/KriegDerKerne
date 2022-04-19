@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace KriegDerKerne
 {
-	public class Entity
+	public abstract class Entity
 	{
 		//leerer Konstruktor
 		public Entity() { }
@@ -14,10 +14,10 @@ namespace KriegDerKerne
 			Name = name;
 		}
 		//Felder
-		protected string _Name;
-		protected int _PosX;
-		protected int _PosY;
-		protected int _maxX = Console.WindowWidth, _maxY = Console.WindowHeight;
+		private string _Name;
+		private int _PosX;
+		private int _PosY;
+		internal int _maxX = Console.WindowWidth-1, _maxY = Console.WindowHeight-1;
 		//properties
 		public string Name
 		{
@@ -60,16 +60,16 @@ namespace KriegDerKerne
 			}
 		}
 		//methods
-		public void DrawEntity(int PosX, int PosY)
+		void DrawEntity(int PosX, int PosY)
 		{
-			Console.SetCursorPosition(PosX, PosY); //BUG OVERFLOW
-			Console.Write(Name /*+ " x= " + posX + " y= " + posY*/);
+			Console.SetCursorPosition(PosX, PosY);
+			Console.Write(Name);
 		}
-		public void DeleteEntity(int PosX, int PosY)
+		void DeleteEntity(int PosX, int PosY)
 		{
 			string temp = Name;
 			Name = Name.Replace(Name, new String(' ', Name.Length));
-			Console.SetCursorPosition(PosX, PosY); //BUG OVERFLOW
+			Console.SetCursorPosition(PosX, PosY);
 			Console.Write(Name);
 			Name = temp;
 		}

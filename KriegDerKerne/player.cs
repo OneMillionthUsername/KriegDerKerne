@@ -7,87 +7,64 @@ namespace KriegDerKerne
 {
 	class Player : Entity
 	{
-		//leerer Konstruktor
-		public Player() { }
+		//inti vars
+		private new int PosX;
+		private new int PosY;
+		private new string Name = "<-O->";
 
-		//Konstruktor für Name
-		public Player(string name, int posX, int posY)
+		//leerer Konstruktor
+		public Player()
 		{
-			Name = name;
-			PosX = posX;
-			PosY = posY;
+			PosX = _maxX/2;
+			PosY = _maxY;
 		}
 		// Methoden
+		public void DrawEntity()
+		{
+			Console.SetCursorPosition(PosX, PosY);
+			Console.Write(Name);
+		}
+		public void DeleteEntity()
+		{
+			string temp = Name;
+			Name = Name.Replace(Name, new String(' ', Name.Length));
+			Console.SetCursorPosition(PosX, PosY);
+			Console.Write(Name);
+			Name = temp;
+		}
 		public void Move()
 		{
-			if (Console.ReadKey(true).Key == ConsoleKey.A)
+			do
 			{
-				Console.SetCursorPosition(PosX, PosY);
-				DeleteEntity(PosX, PosY);
-				PosX -= 1;
-				DrawEntity(PosX, PosY);
-			}
-			if (Console.ReadKey(true).Key == ConsoleKey.D)
-			{
-				Console.SetCursorPosition(PosX, PosY);
-				DeleteEntity(PosX, PosY);
-				PosX += 1;
-				DrawEntity(PosX, PosY);
-			}
-			if (Console.ReadKey(true).Key == ConsoleKey.W)
-			{
-				Console.SetCursorPosition(PosX, PosY);
-				DeleteEntity(PosX, PosY);
-				PosY -= 1;
-				DrawEntity(PosX, PosY);
-			}
-			if (Console.ReadKey(true).Key == ConsoleKey.S)
-			{
-				Console.SetCursorPosition(PosX, PosY);
-				DeleteEntity(PosX, PosY);
-				PosY += 1;
-				DrawEntity(PosX, PosY);
-			}
-		}
-		public void Shoot(List<Entity> entities, List<Enemy> enemies, Entity entity, int PosX, int PosY)
-		{
-			// bringe Cursor in richtiger Position
-			PosX += 2;
-			PosY -= 1;
-			// shoot
-			for (	int i = 0; i < _maxY; i++)
-			{
-				Console.SetCursorPosition(PosX, PosY);
-				entity.DeleteEntity(PosX, PosY);
-				PosY -= 1;
-				entity.DrawEntity(PosX, PosY);
-				if (PosY == 0)
+				if (Console.ReadKey(true).Key == ConsoleKey.A)
 				{
-					entity.DeleteEntity(PosX, PosY);
-					break;
+					Console.SetCursorPosition(PosX, PosY);
+					DeleteEntity();
+					PosX -= 1;
+					DrawEntity();
 				}
-				if (PosY == _maxY)
+				if (Console.ReadKey(true).Key == ConsoleKey.D)
 				{
-					entity.DeleteEntity(PosX, PosY);
-					break;
+					Console.SetCursorPosition(PosX, PosY);
+					DeleteEntity();
+					PosX += 1;
+					DrawEntity();
 				}
-				foreach (Enemy e in enemies)
+				if (Console.ReadKey(true).Key == ConsoleKey.W)
 				{
-					foreach (Entity l in entities)
-					{
-						//wenn ein Gegner getroffen wird, lösche den Laser und den Gegner.
-						if ((l.PosX >= e.PosX - 2 && l.PosX <= e.PosX + 2) && e.PosY == l.PosY)
-						{
-							l.DeleteEntity(l.PosX, l.PosY);
-							entities.Remove(l);
-							e.DeleteEntity(e.PosX, e.PosY);
-							enemies.Remove(e);
-							break;
-						}
-					}
+					Console.SetCursorPosition(PosX, PosY);
+					DeleteEntity();
+					PosY -= 1;
+					DrawEntity();
 				}
-				Thread.Sleep(100);
-			}
+				if (Console.ReadKey(true).Key == ConsoleKey.S)
+				{
+					Console.SetCursorPosition(PosX, PosY);
+					DeleteEntity();
+					PosY += 1;
+					DrawEntity();
+				}
+			} while (true);
 		}
 	}
 }
