@@ -9,59 +9,111 @@ namespace KriegDerKerne
 	{
 		static void Main()
 		{
-			//initialisiere Variablen
+			//initialisiere Variablen und Objekte
+			Random rnd = new();
 			Console.CursorVisible = false;
-			int anzahlEnemies = 2;
+			int anzahlEnemies = 5, dice = 0; 
 			int maxX = Console.WindowWidth - 1, maxY = Console.WindowHeight - 1;
 
 			// erzeuge Listen
-			Random rnd = new();
 			List<Enemy> enemies = new();
 			List<Thread> threads = new();
-			//Laser laser = new();
 
 			// erzeuge Objekte und füge sie zu einer Liste
+			// erzeuge die Gegner
 			for (int i = 0; i < anzahlEnemies; i++)
 			{
 				enemies.Add(new Enemy(rnd.Next(0, maxX), rnd.Next(0, maxY)));
 			}
-			// erzeuge die Gegner
-			foreach (Enemy e in enemies)
-			{
-				e.DrawEnemy();
-			}
+
 			//Erzeuge den Spieler
 			Player player = new();
 			//Spieler zeichnen
 			player.DrawEntity();
-			Thread playerMove = new Thread(new ThreadStart(() => player.Move()));
-			foreach (Enemy enemy in enemies)
+			//Gegner Zeichnen
+			foreach (Enemy e in enemies)
 			{
-				enemy.Move();
+				e.DrawEnemy();
 			}
-			//Thread playerShoot = new Thread(new ThreadStart(() => laser.Shoot(player.PosX, player.PosY)));
-			//Thread runtime = new Thread(() => threads.Add(playerMove));
 
+			Thread playerMove = new Thread(new ThreadStart(() => player.Move()));
 			//starte die Threads
 			playerMove.Start();
-			//starte Bewegung der Gegner
-			foreach (Thread thread in threads)
-			{
-				thread.Start();
-			}
-			
-			//playerShoot.Start();
+
 			//Hauptschleife
 			do
 			{
 				// warte auf Eingabe?
-				// Winning Conditions
-				//Thread.Sleep(100);
+				//starte Bewegung der Gegner
+				foreach (Enemy e in enemies)
+				{
+					//Lösche Gegner auf pos xy
+					e.DeleteEnemy();
+					//berechne position neu
+					#region POSITION BERECHNEN
+
+					if (e.PosY > 0 && e.PosY < e._maxY)
+					{
+						dice = rnd.Next(1, 2 + 1);
+						if (dice > 1)
+						{
+							e.PosY -= 1;
+						}
+						else
+						{
+							e.PosY += 1;
+						}
+					}
+					else
+					{
+						if (e.PosY == 0)
+						{
+							e.PosY += 1;
+						}
+						if (e.PosY == e._maxY)
+						{
+							e.PosY -= 1;
+						}
+					}
+					if (e.PosX > 0 && e.PosX < e._maxX)
+					{
+						dice = rnd.Next(1, 2 + 1);
+						if (dice > 1)
+						{
+							e.PosX -= 1;
+						}
+						else
+						{
+							e.PosX += 1;
+						}
+					}
+					else
+					{
+						if (e.PosX == 0)
+						{
+							e.PosX += 1;
+						}
+						if (e.PosX == e._maxX)
+						{
+							e.PosX -= 1;
+						}
+					}
+					#endregion
+					//zeichne Gegner auf neuer pos
+					e.DrawEnemy();
+					Thread.Sleep(10);
+				}
 			} while (enemies.Count != 0);
+
 			Console.Clear();
 			Console.SetCursorPosition(maxX / 2, maxY / 2);
 			Console.WriteLine("GG!");
 		}
+		public static void Move(Enemy e)
+		{
+			
+		}
+
 		public static void CheckInputAndShoot(Player player)
 		{
 			do

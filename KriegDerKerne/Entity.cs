@@ -60,18 +60,18 @@ namespace KriegDerKerne
 			}
 		}
 		//methods
-		void DrawEntity(int PosX, int PosY)
-		{
-			Console.SetCursorPosition(PosX, PosY);
-			Console.Write(Name);
-		}
-		void DeleteEntity(int PosX, int PosY)
-		{
-			string temp = Name;
-			Name = Name.Replace(Name, new String(' ', Name.Length));
-			Console.SetCursorPosition(PosX, PosY);
-			Console.Write(Name);
-			Name = temp;
-		}
+		//void DrawEntity(int PosX, int PosY)
+		//{
+		//	Console.SetCursorPosition(PosX, PosY);
+		//	Console.Write(Name);
+		//}
+		//void DeleteEntity(int PosX, int PosY)
+		//{
+		//	string temp = Name;
+		//	Name = Name.Replace(Name, new String(' ', Name.Length));
+		//	Console.SetCursorPosition(PosX, PosY);
+		//	Console.Write(Name);
+		//	Name = temp;
+		//}
 	}
 }

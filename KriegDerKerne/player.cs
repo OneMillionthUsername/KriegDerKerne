@@ -7,12 +7,12 @@ namespace KriegDerKerne
 {
 	class Player : Entity
 	{
-		//inti vars
-		private new int PosX;
-		private new int PosY;
+		//init fields
+		protected new int PosX;
+		protected new int PosY;
 		private new string Name = "<-O->";
 
-		//leerer Konstruktor
+		//Konstruktor
 		public Player()
 		{
 			PosX = _maxX/2;
