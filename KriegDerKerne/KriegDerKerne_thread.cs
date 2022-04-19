@@ -35,10 +35,10 @@ namespace KriegDerKerne
 			player.DrawEntity();
 			Thread playerMove = new(new ThreadStart(() => player.Move()));
 			Thread playerShoot = new(new ThreadStart(() => player.Shoot()));
-			Thread checkInput = new(new ThreadStart(() => CheckInput(player)));
+			//Thread checkInput = new(new ThreadStart(() => CheckInput(player)));
 
 			//starte die Threads
-			Threads(checkInput, playerMove, playerShoot);
+			Threads(playerMove, playerShoot);
 
 			//Hauptschleife
 			do
@@ -111,10 +111,10 @@ namespace KriegDerKerne
 		}
 		public static void CheckInput(Player p)
 		{
-			if(Console.ReadKey(true).Key == ConsoleKey.Spacebar)
-			{
-				p.Shoot();
-			}
+			//if(Console.ReadKey(true).Key == ConsoleKey.Spacebar)
+			//{
+			//	p.Shoot();
+			//}
 		}
 		public static void Threads(params Thread[] threads)
 		{

@@ -29,6 +29,7 @@ namespace KriegDerKerne
 					DeleteEntity();
 					PosX -= 1;
 					DrawEntity();
+					continue;
 				}
 				if (Console.ReadKey(true).Key == ConsoleKey.D)
 				{
@@ -36,6 +37,7 @@ namespace KriegDerKerne
 					DeleteEntity();
 					PosX += 1;
 					DrawEntity();
+					continue;
 				}
 				if (Console.ReadKey(true).Key == ConsoleKey.W)
 				{
@@ -43,6 +45,7 @@ namespace KriegDerKerne
 					DeleteEntity();
 					PosY -= 1;
 					DrawEntity();
+					continue;
 				}
 				if (Console.ReadKey(true).Key == ConsoleKey.S)
 				{
@@ -50,9 +53,6 @@ namespace KriegDerKerne
 					DeleteEntity();
 					PosY += 1;
 					DrawEntity();
-				}
-				else
-				{
 					continue;
 				}
 			} while (true);
@@ -67,6 +67,11 @@ namespace KriegDerKerne
 				// shoot
 				for (int i = 0; i < laser._maxY; i++)
 				{
+					if (laser.PosY == _maxY || laser.PosX >= _maxX)
+					{
+						laser.DeleteEntity();
+						break;
+					}
 					Console.SetCursorPosition(laser.PosX, laser.PosY);
 					laser.DeleteEntity();
 					laser.PosY -= 1;
