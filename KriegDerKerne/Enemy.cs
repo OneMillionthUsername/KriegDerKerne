@@ -6,13 +6,12 @@
 		private readonly string _name = "\\_I_/";
 
 		//Konstruktor
-		public Enemy(int x, int y)
+		public Enemy(int posX, int posY)
 		{
-			PosX = x;
-			PosY = y;
+			PosX = posX;
+			PosY = posY;
 			Name = _name;
 		}
 		//Methoden
-
 	}
 }

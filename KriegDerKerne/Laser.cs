@@ -6,7 +6,6 @@
 		private readonly string _name = "|";
 
 		//Konstruktor
-		public Laser() { }
 		public Laser(int posX, int posY)
 		{
 			PosX = posX;

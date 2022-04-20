@@ -43,8 +43,8 @@ namespace KriegDerKerne
 			//Hauptschleife
 			do
 			{
-				// warte auf Eingabe?
-				//starte Bewegung der Gegner
+				//warte auf Eingabe?
+				//starte Bewegung der Gegner - Code aus der Klasse ausführen?
 				foreach (Enemy e in enemies)
 				{
 					//Lösche Gegner auf pos xy
@@ -123,7 +123,7 @@ namespace KriegDerKerne
 			foreach (Thread thread in threads)
 			{
 				thread.Start();
-				q.Enqueue(Thread.CurrentThread);
+				q.Enqueue(thread);
 			}
 		}
 	}

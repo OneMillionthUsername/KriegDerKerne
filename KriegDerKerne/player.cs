@@ -59,7 +59,8 @@ namespace KriegDerKerne
 		}
 		public void Shoot()
 		{
-			//SPIELER POSITION WIRD NICHT AKTUALISIERT!
+			//SPIELER POSITION WIRD FALSCH AKTUALISIERT!
+			//Methode in die Laser Klasse verschieben?
 			do
 			{
 				// Konstruktor und bringe Cursor in richtiger Position
